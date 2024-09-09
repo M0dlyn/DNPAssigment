@@ -8,6 +8,9 @@ public class CommentInMemoryRepository : ICommentRepository
 {
     
     List<Comment> comments = new List<Comment>();
+    private int likes = 0; 
+    private int dislikes = 0;
+    List<Comment> commentsOnComment = new List<Comment>();
 
 
     public Task<Comment> AddAsync(Comment comment)
@@ -56,4 +59,34 @@ public class CommentInMemoryRepository : ICommentRepository
     {
         return comments.AsQueryable();
     }
+    
+    public Task<Comment> LikeAsync(Comment comment)
+    {
+        Comment? postToLike = comments.SingleOrDefault(c => c.Id == comment.Id);
+
+        likes++;
+        
+        return Task.FromResult(postToLike ?? comment);
+    }
+
+    public Task<Comment> DislikeAsync(Comment comment)
+    {
+        Comment? postToDislike = comments.SingleOrDefault(c => c.Id == comment.Id);
+
+        dislikes++;
+        
+        return Task.FromResult(postToDislike ?? comment);
+    }
+
+    public Task<Comment> CommentAsync(Comment comment)
+    {
+        comment.Id = commentsOnComment.Any()
+            ? commentsOnComment.Max(comment => comment.Id) + 1
+            : 1;
+        commentsOnComment.Add(comment);
+        return Task.FromResult(comment);
+        
+    }
+        
+    
 }

@@ -8,6 +8,9 @@ public class PostInMemoryRepository : IPostRepository
 {
 
     private List<Post> posts = new List<Post>();
+    private int likes = 0;
+    private int dislikes = 0;
+
     
     
     public Task<Post> AddAsync(Post post)
@@ -59,6 +62,21 @@ public class PostInMemoryRepository : IPostRepository
     {
         return posts.AsQueryable();
     }
+
+    public Task<Post> LikeAsync(Post post)
+    {
+        Post? postToLike = posts.SingleOrDefault(p => p.Id == post.Id);
+        likes++;
+        return Task.FromResult(postToLike ?? post);
+    }
+
+    public Task<Post> DislikeAsync(Post post)
+    {
+        Post? postToDislike = posts.SingleOrDefault(p => p.Id == post.Id);
+        dislikes++;
+        return Task.FromResult(postToDislike ?? post);
+    }
+    
     
     
     
