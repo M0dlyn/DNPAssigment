@@ -12,7 +12,7 @@ public class CommentInMemoryRepository : ICommentRepository
 
     public Task<Comment> AddAsync(Comment comment)
     {
-        comment.Id = comments.Any();
+        comment.Id = comments.Any()
             ? comments.Max(comment => comment.Id) + 1
             : 1;
         comments.Add(comment);

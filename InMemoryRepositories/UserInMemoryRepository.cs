@@ -12,7 +12,7 @@ public class UserInMemoryRepository : IUserRepository
     public Task<User> AddAsync(User user)
     {
 
-        user.Id = users.Any();
+        user.Id = users.Any()
             ? users.Max(user  => user.Id) + 1
             : 1;
         users.Add(user);
