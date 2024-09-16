@@ -44,12 +44,12 @@ public class PostInMemoryRepository : IPostRepository
         return Task.CompletedTask;
     }
 
-    public Task DeleteAsync(Post post)
+    public Task DeleteAsync(int id)
     {
-        Post? postToRemove = posts.SingleOrDefault(p => p.Id == post.Id);
+        Post? postToRemove = posts.SingleOrDefault(p => p.Id == id);
         if (postToRemove is null)
         {
-            throw new InvalidOperationException($"Post with Id ' {post.Id}' does not exist");
+            throw new InvalidOperationException($"Post with Id ' {id}' does not exist");
         }
         posts.Remove(postToRemove);
         return Task.CompletedTask;

@@ -21,9 +21,9 @@ public class ManagePostsView
     }
     
     
-    public void DeletePost(Post post)
+    public void DeletePost(int id)
     {
-        postRepository.DeleteAsync(post);
+        postRepository.DeleteAsync(id);
     }
     
     public void UpdatePost(Post post)
