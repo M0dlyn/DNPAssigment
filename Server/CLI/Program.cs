@@ -8,6 +8,7 @@ Console.WriteLine("Starting CLI app....");
 IUserRepository userRepository = new UserInMemoryRepository();
 ICommentRepository commentRepository = new CommentInMemoryRepository();
 IPostRepository postRepository = new PostInMemoryRepository();
+ISubForumRepository subForumRepository = new SubForumInMemoryRepository();
 
-CliApp cliApp = new CliApp( userRepository, commentRepository, postRepository );
+CliApp cliApp = new CliApp( userRepository, commentRepository, postRepository, subForumRepository );
 await cliApp.StartAsync();

@@ -3,7 +3,7 @@ using RepositoryContracts;
 
 namespace InMemoryRepositories;
 
-public class SubForumInMemoryRepository
+public class SubForumInMemoryRepository : ISubForumRepository
 {
     private List<SubForum> forums = new List<SubForum>();
    
