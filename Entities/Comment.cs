@@ -8,6 +8,9 @@ public class Comment
     
     public int PostId { get; set; }
 
+    public int Likes { get; set; }
+    public int Dislikes { get; set; } 
+    public int Comments { get; set; } 
 
     public Comment(String body, int postId, int userId )
     {
