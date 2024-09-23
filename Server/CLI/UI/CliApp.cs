@@ -3,7 +3,7 @@ using Entities;
 
 namespace CLI.UI;
 
-using InMemoryRepositories;
+using FileRepositories;
 using RepositoryContracts;
 
 
@@ -68,7 +68,7 @@ public class CliApp
                     Console.WriteLine("Invalid user ID.");
                 }
 
-                StartAsync();
+               await StartAsync();
                 break;
             case "2":
                 Console.WriteLine("Enter post ID:");
@@ -89,7 +89,7 @@ public class CliApp
                 {
                     Console.WriteLine("Invalid post ID.");
                 }
-                StartAsync();
+                await StartAsync();
                 break;
             case "3":
 
@@ -117,7 +117,7 @@ public class CliApp
                 {
                     Console.WriteLine("Invalid post ID.");
                 }
-                StartAsync();
+                await StartAsync();
                 break;
             case "4":
                 Console.WriteLine("Enter post ID:");
@@ -233,7 +233,7 @@ public class CliApp
                 {
                     Console.WriteLine("Invalid post ID.");
                 }
-                StartAsync();
+                await StartAsync();
                 break;
             
             case "5":
@@ -246,7 +246,7 @@ public class CliApp
                     Console.WriteLine($"Post User ID: {post.UserId}");
                     Console.WriteLine();
                 }
-                StartAsync();
+                await StartAsync();
                 break;
                 
             case "6":
@@ -257,7 +257,7 @@ public class CliApp
                 user = new User(username, password);
                 await userRepository.AddAsync(user);
                 Console.WriteLine("User added successfully.");
-                StartAsync();
+                await  StartAsync();
                 break;
             case "7":
                 Console.WriteLine("Enter user ID:");
@@ -278,7 +278,7 @@ public class CliApp
                 {
                     Console.WriteLine("Invalid user ID.");
                 }
-                StartAsync();
+                await  StartAsync();
                 break;
             case "8":
 
@@ -306,7 +306,7 @@ public class CliApp
                 {
                     Console.WriteLine("Invalid user ID.");
                 }
-                StartAsync();
+                await StartAsync();
                 break;
             case "9":
                 Console.WriteLine("Enter user ID:");
@@ -328,7 +328,7 @@ public class CliApp
                 {
                     Console.WriteLine("Invalid user ID.");
                 }
-                StartAsync();
+                await  StartAsync();
                 break;
             case "10":
                 Console.WriteLine("Listing users...");
@@ -338,7 +338,7 @@ public class CliApp
                     Console.WriteLine($"Username: {u.Username}");
                     Console.WriteLine();
                 }
-                StartAsync();
+                await  StartAsync();
                 break;
             case "11":
             {
