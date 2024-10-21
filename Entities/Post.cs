@@ -13,4 +13,10 @@ public class Post
         this.Body = body;
         this.UserId = userId;
     }
+    
+    public void Update(string title, string body)
+    {
+        this.Title = title;
+        this.Body = body;
+    }
 }
