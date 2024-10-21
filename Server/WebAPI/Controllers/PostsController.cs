@@ -23,7 +23,7 @@ public class PostsController : ControllerBase
             Post post = new(request.Title, request.Body, request.Id);
             Post created = await postRepo.AddAsync(post);
             PostDto postDto = new(created.Title, created.Body, created.Id);
-            return Created($"/Posts/{postDto.Id}", postDto);
+            return Created($"/Posts/{postDto.Id}", created);
         }
         catch (Exception e)
         {
@@ -63,8 +63,8 @@ public class PostsController : ControllerBase
             {
                 return NotFound();
             }
-            PostDto postDto = new(post.Title, post.Body, post.Id);
-            return Ok(postDto);
+            
+            return Ok(post);
         }
         catch (Exception e)
         {
