@@ -30,7 +30,7 @@ public class UserInMemoryRepository : IUserRepository
         
     }
 
-    public Task UpdateAsync(User user)
+    public Task UpdateAsync(int id, User user)
     {
         
         User? existingUser = users.SingleOrDefault(u => u.Id == user.Id);

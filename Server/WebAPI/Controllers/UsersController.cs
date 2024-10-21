@@ -41,8 +41,7 @@ public class UsersController : ControllerBase
         try
         {
             User result =  await userRepo.GetSingleAsync(id);
-            UserDto userDto = new(result.Id, result.Username);
-            return Ok(userDto); 
+            return Ok(result);
         }
         catch (Exception e)
         {
@@ -51,6 +50,43 @@ public class UsersController : ControllerBase
         }
     }
     
-    []
+    [HttpDelete("{id}")]
+    public async Task<ActionResult<UserDto>> DeleteUser([FromRoute]int id)
+    {
+           
+            await userRepo.DeleteAsync(id);
+            return NoContent();       
+       
+    }
+
+    [HttpGet]
+    public async Task<ActionResult<IQueryable<UserDto>>> GetUsers()
+    {
+        IQueryable<User> users = userRepo.GetMany();
+        List<UserDto> userDtos = users.Select(user => new UserDto(user.Id, user.Username)).ToList();
+        return Ok(userDtos);
+    }
+    
+    
+    [HttpPut("{id}")]
+    public async Task<ActionResult<UserDto>> UpdateUser([FromRoute]int id, [FromBody]UpdateUserDto request)
+    {
+        try
+        {
+            User user = await userRepo.GetSingleAsync(id);
+            user.Username = request.Username;
+            user.Password = request.Password;
+            await userRepo.UpdateAsync(id,user);
+            return NoContent();
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
+    }
+    
+    
+    
     
 }
