@@ -8,3 +8,8 @@
 @using Microsoft.JSInterop
 @using BlazorApp
 @using BlazorApp.Components
+@using BlazorApp.Services
+@inject IUserService userService
+@inject ICommentService commentService
+@inject IPostService postService
+@inject NavigationManager navMgr

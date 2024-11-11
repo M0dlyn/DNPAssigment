@@ -1,0 +1,55 @@
+﻿@page "/create-post"
+@inject HttpClient Http
+@attribute [StreamRendering]
+
+<h3>Create Post</h3>
+
+<EditForm Model="@post" OnValidSubmit="HandleValidSubmit">
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="form-group">
+        <label for="title">Title</label>
+        <InputText id="title" class="form-control" @bind-Value="@post.Title" />
+        <ValidationMessage For="@(() => post.Title)" />
+    </div>
+
+    <div class="form-group">
+        <label for="content">Content</label>
+        <InputTextArea id="content" class="form-control" @bind-Value="@post.Content" />
+        <ValidationMessage For="@(() => post.Content)" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Create Post</button>
+</EditForm>
+
+@if (successMessage != null)
+{
+    <div class="alert alert-success mt-3">@successMessage</div>
+}
+
+@code {
+    private Post post = new Post();
+    private string successMessage;
+
+    private async Task HandleValidSubmit()
+    {
+        var response = await Http.PostAsJsonAsync("posts", post);
+        
+        if (response.IsSuccessStatusCode)
+        {
+            successMessage = "Post created successfully!";
+            post = new Post(); // Reset the form
+        }
+        else
+        {
+            successMessage = "Error creating post.";
+        }
+    }
+
+    public class Post
+    {
+        public string Title { get; set; }
+        public string Content { get; set; }
+    }
+}
