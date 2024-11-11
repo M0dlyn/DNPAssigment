@@ -7,9 +7,13 @@
 @using Microsoft.AspNetCore.Components.Web.Virtualization
 @using Microsoft.JSInterop
 @using BlazorApp
+@using BlazorApp.Auth
 @using BlazorApp.Components
 @using BlazorApp.Services
+@using Microsoft.AspNetCore.Components.Authorization
 @inject IUserService userService
 @inject ICommentService commentService
 @inject IPostService postService
 @inject NavigationManager navMgr
+@inject IJSRuntime jsRuntime
+@inject AuthenticationStateProvider AuthProvider

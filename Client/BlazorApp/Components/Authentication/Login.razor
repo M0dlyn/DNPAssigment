@@ -3,7 +3,12 @@
 @using Microsoft.AspNetCore.Components.Authorization
 @inject AuthenticationStateProvider AuthProvider
 @inject NavigationManager navMgr
-<h3>This is where you login</h3> 
+@rendermode InteractiveServer
+<h3>This is where you login</h3>
+
+<p>Please enter your credentials to log in.</p>
+
+
 @code 
 {
     private string userName; 

@@ -1,49 +1,37 @@
-﻿@page "/create-post"
+﻿@page "/CreatePost"
 @inject HttpClient Http
-@attribute [StreamRendering]
-
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
 <h3>Create Post</h3>
 
-<EditForm Model="@post" OnValidSubmit="HandleValidSubmit">
+<EditForm Model="newPost" OnValidSubmit="HandleValidSubmit">
     <DataAnnotationsValidator />
     <ValidationSummary />
 
-    <div class="form-group">
-        <label for="title">Title</label>
-        <InputText id="title" class="form-control" @bind-Value="@post.Title" />
-        <ValidationMessage For="@(() => post.Title)" />
+    <div>
+        <label for="title">Title:</label>
+        <InputText id="title" @bind-Value="newPost.Title" />
     </div>
-
-    <div class="form-group">
-        <label for="content">Content</label>
-        <InputTextArea id="content" class="form-control" @bind-Value="@post.Content" />
-        <ValidationMessage For="@(() => post.Content)" />
+    <div>
+        <label for="content">Content:</label>
+        <InputTextArea id="content" @bind-Value="newPost.Content" />
     </div>
-
-    <button type="submit" class="btn btn-primary">Create Post</button>
+    <button type="submit">Submit</button>
 </EditForm>
 
-@if (successMessage != null)
-{
-    <div class="alert alert-success mt-3">@successMessage</div>
-}
-
 @code {
-    private Post post = new Post();
-    private string successMessage;
+    private Post newPost = new Post();
 
     private async Task HandleValidSubmit()
     {
-        var response = await Http.PostAsJsonAsync("posts", post);
-        
+        var response = await Http.PostAsJsonAsync("/posts", newPost);
         if (response.IsSuccessStatusCode)
         {
-            successMessage = "Post created successfully!";
-            post = new Post(); // Reset the form
+            Navigation.NavigateTo("/");
         }
         else
         {
-            successMessage = "Error creating post.";
+            // Handle error
         }
     }
 
