@@ -24,9 +24,9 @@ public class ManageUsersView
     }
     
     
-    public void UpdateUser(User user)
+    public void UpdateUser(int id, User user)
     {
-        userRepository.UpdateAsync(user);
+        userRepository.UpdateAsync(id, user);
     }
     
     
