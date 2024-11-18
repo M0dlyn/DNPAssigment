@@ -15,7 +15,7 @@ public class ManageCommentsView
     
     public async Task CreateComment(int postId, int userId, string commentBody)
     {
-        var comment = new Comment(commentBody,userId,postId)
+        var comment = new Comment
         {
             PostId = postId,
             UserId = userId,

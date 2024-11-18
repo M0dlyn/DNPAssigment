@@ -1,7 +1,6 @@
 using ApiContracts;
-using Entities;
 using Microsoft.AspNetCore.Mvc;
-using RepositoryContracts;
+using ServicesContracts;
 
 namespace WebAPI.Controllers;
 
@@ -9,23 +8,40 @@ namespace WebAPI.Controllers;
 [Route("[controller]")]
 public class AuthController : ControllerBase
 {
-    private readonly IUserRepository userRepo;
+    private readonly IAuthService authService;
 
-    public AuthController(IUserRepository userRepo)
+    public AuthController(IAuthService authService)
     {
-        this.userRepo = userRepo;
+        this.authService = authService;
     }
 
     [HttpPost("login")]
-    public async Task<ActionResult<UserDto>> Login([FromBody] LoginDto request)
+    public async Task<ActionResult<AuthResponseDto>> Login([FromBody] LoginDto request)
     {
-        User user = await userRepo.FindByUsernameAsync(request.Username);
-        if (user == null || user.Password != request.Password)
+        try
         {
-            return Unauthorized("Invalid username or password.");
+            AuthResponseDto response = await authService.LoginAsync(request);
+            return Ok(response);
         }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return Unauthorized(e.Message);
+        }
+    }
 
-        UserDto userDto = new UserDto(user.Id, user.Username);
-        return Ok(userDto);
+    [HttpPost("register")]
+    public async Task<ActionResult<AuthResponseDto>> Register([FromBody] RegisterDto request)
+    {
+        try
+        {
+            AuthResponseDto response = await authService.RegisterAsync(request);
+            return Ok(response);
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            return StatusCode(500, e.Message);
+        }
     }
 }
