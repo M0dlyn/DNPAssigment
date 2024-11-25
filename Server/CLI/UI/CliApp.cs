@@ -275,7 +275,7 @@ public class CliApp
                         var newPassword = Console.ReadLine();
                         user.Name = newUsername;
                         user.Password = newPassword;
-                        await userRepository.UpdateAsync(user);
+                        await userRepository.UpdateAsync(updateUserId, user);
                         Console.WriteLine("User updated successfully.");
                     }
                     else

@@ -1,4 +1,5 @@
-﻿using Entities;
+﻿using System.Collections;
+using Entities;
 
 namespace RepositoryContracts
 {
@@ -8,6 +9,6 @@ namespace RepositoryContracts
         Task<User> GetSingleAsync(Guid id);
         Task DeleteAsync(Guid id);
         Task<List<User>> GetAllAsync();
-        Task UpdateAsync(User user);
-    }
+        Task UpdateAsync(Guid id, User user);
+        IQueryable<User> GetMany();    }
 }

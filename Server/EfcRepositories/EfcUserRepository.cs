@@ -26,7 +26,7 @@ public class EfcUserRepository : IUserRepository
         return await ctx.Users.ToListAsync();
     }
 
-    public async Task UpdateAsync(User user)
+    public async Task UpdateAsync(Guid id, User user)
     {
         if (!(await ctx.Users.AnyAsync(u => u.Id == user.Id)))
         {

@@ -80,7 +80,8 @@ public class UsersController : ControllerBase
             User user = await userRepo.GetSingleAsync(id);
             user.Name = request.Name;
             user.Email = request.Email;
-            await userRepo.UpdateAsync(user);
+            user.Id = request.Id;
+            await userRepo.UpdateAsync(id ,user);
             UserDto userDto = new(user.Id, user.Name, user.Email, user.Password);
             return Ok(userDto);
         }

@@ -34,7 +34,7 @@ public class UserFileRepository : IUserRepository
         return Task.FromResult(users);
     }
 
-    public async Task UpdateAsync(User user)
+    public async Task UpdateAsync(Guid id, User user)
     {
         string usersAsJson = await File.ReadAllTextAsync(filePath);
         List<User> users = JsonSerializer.Deserialize<List<User>>(usersAsJson) ?? new List<User>();

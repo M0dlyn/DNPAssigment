@@ -30,8 +30,10 @@ public class EfcCommentRepository : ICommentRepository
     {
         if (!(await ctx.Comments.AnyAsync(c => c.Id == comment.Id)))
         {
-            throw new NotFoundException($"Comment with id {comment.Id} not found");
+            throw new NotFoundException(
+                $"Comment with id {comment.Id} not found");
         }
+
         ctx.Comments.Update(comment);
         await ctx.SaveChangesAsync();
     }
@@ -43,6 +45,7 @@ public class EfcCommentRepository : ICommentRepository
         {
             throw new NotFoundException($"Comment with id {id} not found");
         }
+
         ctx.Comments.Remove(comment);
         await ctx.SaveChangesAsync();
     }
@@ -54,11 +57,13 @@ public class EfcCommentRepository : ICommentRepository
         {
             throw new NotFoundException($"Comment with id {id} not found");
         }
+
         return comment;
     }
 
     public IQueryable<Comment> GetMany()
     {
         return ctx.Comments.AsQueryable();
+
     }
 }

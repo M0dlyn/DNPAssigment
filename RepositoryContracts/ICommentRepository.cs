@@ -10,5 +10,6 @@ namespace RepositoryContracts
         Task DeleteAsync(Guid id);
         Task<List<Comment>> GetAllAsync();
         Task UpdateAsync(Comment comment);
+        IQueryable<Comment> GetMany();
     }
 }

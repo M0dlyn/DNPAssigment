@@ -11,6 +11,7 @@
         public User User { get; set; }
         public List<Comment> Comments { get; set; } = new List<Comment>();
         public string Body { get; set; }
+        public Guid PostId { get; set; }
 
         private Post() {} // Private constructor for EFC
 
@@ -26,6 +27,13 @@
         public static Post Create(string title, string content, Guid userId) // Changed from int to Guid
         {
             return new Post(title, content, userId);
+        }
+
+        public void Update(string requestTitle, string requestBody)
+        {
+            Title = requestTitle;
+            Body = requestBody;
+            
         }
     }
 }
