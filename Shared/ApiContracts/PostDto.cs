@@ -2,14 +2,19 @@ namespace ApiContracts;
 
 public class PostDto
 {
-    public string Title;
-    public string Body;
-    public Guid Id;
-
-    public PostDto(string Title, string Body, Guid Id)
+    public string Title { get; set; }
+    public string Body { get; set; }
+    public int Id { get; set; }
+    public int UserId  { get; set; }
+    
+    public PostDto(string title, string body, int id, int userId)
     {
-        this.Title = Title;
-        this.Body = Body;
-        this.Id = Id;
+        Title = title;
+        Body = body;
+        Id = id;
+        UserId = userId;
     }
+    
+
+   
 }

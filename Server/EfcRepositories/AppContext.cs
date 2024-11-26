@@ -1,4 +1,5 @@
 ﻿// AppContext.cs
+
 using Entities;
 using Microsoft.EntityFrameworkCore;
 
@@ -16,7 +17,7 @@ namespace EfcRepositories
         {
             if (!optionsBuilder.IsConfigured)
             {
-                optionsBuilder.UseSqlite("Data Source=app.db");
+                optionsBuilder.UseSqlite("Data Source=C:\\Users\\Mario\\RiderProjects\\DNPAssigment1\\Server\\EfcRepositories\\app.db");
             }
         }
 
@@ -29,7 +30,7 @@ namespace EfcRepositories
 
             modelBuilder.Entity<Comment>()
                 .HasOne(c => c.Post)
-                .WithMany(p => p.Comments)
+                .WithMany(p => p.Comment)
                 .HasForeignKey(c => c.PostId);
 
             modelBuilder.Entity<Comment>()

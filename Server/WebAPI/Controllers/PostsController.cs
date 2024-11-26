@@ -20,9 +20,9 @@ public class PostsController : ControllerBase
     {
         try
         {
-            Post post = new(request.Title, request.Body, request.Id);
+            Post post = new(request.Title, request.Body, request.UserId);
             Post created = await postRepo.AddAsync(post);
-            PostDto postDto = new(created.Title, created.Body, created.Id);
+            PostDto postDto = new(created.Title, created.Body, created.Id, created.UserId);
             return Created($"/Posts/{postDto.Id}", created);
         }
         catch (Exception e)
@@ -79,7 +79,7 @@ public class PostsController : ControllerBase
         try
         {
             IEnumerable<Post> posts = postRepo.GetMany();
-            IEnumerable<PostDto> postDtos = posts.Select(post => new PostDto(post.Title, post.Body, post.Id));
+            IEnumerable<PostDto> postDtos = posts.Select(post => new PostDto(post.Title, post.Body, post.Id, post.UserId));                                                         
             return Ok(postDtos);
         }
         catch (Exception e)

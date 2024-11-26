@@ -31,7 +31,7 @@ public class EfcPostRepository : IPostRepository
         await ctx.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(int id)
     {
         Post? post = await ctx.Posts.FindAsync(id);
         if (post == null)
@@ -57,29 +57,7 @@ public class EfcPostRepository : IPostRepository
         return ctx.Posts.AsQueryable();
     }
 
-    public async Task<Post> LikeAsync(Post post)
-    {
-        Post? existingPost = await ctx.Posts.FindAsync(post.Id);
-        if (existingPost == null)
-        {
-            throw new NotFoundException($"Post with id {post.Id} not found");
-        }
-        existingPost.Likes++;
-        await ctx.SaveChangesAsync();
-        return existingPost;
-    }
-
-    public async Task<Post> DislikeAsync(Post post)
-    {
-        Post? existingPost = await ctx.Posts.FindAsync(post.Id);
-        if (existingPost == null)
-        {
-            throw new NotFoundException($"Post with id {post.Id} not found");
-        }
-        existingPost.Dislikes++;
-        await ctx.SaveChangesAsync();
-        return existingPost;
-    }
+ 
 
     public async Task<IEnumerable<Post>> GetAllAsync()
     {

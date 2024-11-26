@@ -1,5 +1,6 @@
 ﻿using ApiContracts;
 using Entities;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using RepositoryContracts;
 
@@ -7,40 +8,41 @@ namespace WebAPI.Controllers;
 
 [ApiController]
 [Route("[controller]")]
+
 public class CommentsController : ControllerBase
 {
     private readonly ICommentRepository commentRepo;
-
+    
     public CommentsController(ICommentRepository commentRepo)
     {
         this.commentRepo = commentRepo;
     }
-
+    
     [HttpPost]
     public async Task<ActionResult<CommentDto>> CreateComment([FromBody] CreateCommentDto request)
     {
         try
         {
-            Comment comment = new Comment { Content = request.Content, PostId = request.PostId, UserId = request.UserId };
+            Comment comment = new Comment(request.Content, request.PostId, request.UserId);
             Comment created = await commentRepo.AddAsync(comment);
-            CommentDto commentDto = new(created.Id, created.Content, created.UserId, created.PostId);
-            return Created($"/Comments/{created.Id}", commentDto);
+            CommentDto commentDto = new(created.Id, created.Body, created.UserId, created.PostId);
+            return Created($"/Comments/{created.Id}", created);
         }
         catch (Exception e)
         {
             Console.WriteLine(e);
             return StatusCode(500, e.Message);
         }
-    }
 
+    }
+    
     [HttpGet("{id}")]
-    public async Task<ActionResult<CommentDto>> GetSingleComment([FromRoute] Guid id)
+    public async Task<ActionResult<CommentDto>> GetSingleComment([FromRoute]int id)
     {
         try
         {
-            Comment result = await commentRepo.GetSingleAsync(id);
-            CommentDto commentDto = new(result.Id, result.Content, result.UserId, result.PostId);
-            return Ok(commentDto);
+            Comment result =  await commentRepo.GetSingleAsync(id);
+            return Ok(result);
         }
         catch (Exception e)
         {
@@ -48,40 +50,33 @@ public class CommentsController : ControllerBase
             return NotFound(e.Message);
         }
     }
-
+    
     [HttpDelete("{id}")]
-    public async Task<ActionResult> DeleteComment([FromRoute] Guid id)
+    public async Task<ActionResult<CommentDto>> DeleteComment([FromRoute]int id)
     {
-        try
-        {
+           
             await commentRepo.DeleteAsync(id);
-            return NoContent();
-        }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            return StatusCode(500, e.Message);
-        }
+            return NoContent();       
+        
     }
-
-    [HttpGet]
-    public async Task<ActionResult<List<CommentDto>>> GetComments()
+    
+    [HttpGet("post/{postId}")]
+    public async Task<ActionResult<IQueryable<CommentDto>>> GetCommentsFromPostId([FromRoute] int postId)
     {
-        List<Comment> comments = await commentRepo.GetAllAsync();
-        List<CommentDto> result = comments.Select(comment => new CommentDto(comment.Id, comment.Content, comment.PostId, comment.UserId)).ToList();
+        IQueryable<Comment> comments = commentRepo.GetMany().Where(c => c.PostId == postId);
+        List<CommentDto> result = comments.Select(comment => new CommentDto(comment.Id, comment.Body, comment.PostId, comment.UserId)).ToList();
         return Ok(result);
     }
-
+    
     [HttpPut("{id}")]
-    public async Task<ActionResult<CommentDto>> UpdateComment([FromRoute] Guid id, [FromBody] UpdateCommentDto request)
+    public async Task<ActionResult<CommentDto>> UpdateComment([FromRoute]int id, [FromBody] UpdateCommentDto request)
     {
         try
         {
             Comment comment = await commentRepo.GetSingleAsync(id);
-            comment.Content = request.Content;
+            comment.Body = request.Body;
             await commentRepo.UpdateAsync(comment);
-            CommentDto commentDto = new(comment.Id, comment.Content, comment.UserId, comment.PostId);
-            return Ok(commentDto);
+            return Ok(comment);
         }
         catch (Exception e)
         {
@@ -89,4 +84,6 @@ public class CommentsController : ControllerBase
             return StatusCode(500, e.Message);
         }
     }
+    
+    
 }

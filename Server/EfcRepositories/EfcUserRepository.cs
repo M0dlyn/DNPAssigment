@@ -26,7 +26,7 @@ public class EfcUserRepository : IUserRepository
         return await ctx.Users.ToListAsync();
     }
 
-    public async Task UpdateAsync(Guid id, User user)
+    public async Task UpdateAsync(int id, User user)
     {
         if (!(await ctx.Users.AnyAsync(u => u.Id == user.Id)))
         {
@@ -36,7 +36,7 @@ public class EfcUserRepository : IUserRepository
         await ctx.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(int id)
     {
         User? user = await ctx.Users.FindAsync(id);
         if (user == null)
@@ -47,7 +47,7 @@ public class EfcUserRepository : IUserRepository
         await ctx.SaveChangesAsync();
     }
 
-    public async Task<User> GetSingleAsync(Guid id)
+    public async Task<User> GetSingleAsync(int id)
     {
         User? user = await ctx.Users.FindAsync(id);
         if (user == null)

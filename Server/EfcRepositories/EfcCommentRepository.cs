@@ -38,7 +38,7 @@ public class EfcCommentRepository : ICommentRepository
         await ctx.SaveChangesAsync();
     }
 
-    public async Task DeleteAsync(Guid id)
+    public async Task DeleteAsync(int id)
     {
         Comment? comment = await ctx.Comments.FindAsync(id);
         if (comment == null)
@@ -50,7 +50,7 @@ public class EfcCommentRepository : ICommentRepository
         await ctx.SaveChangesAsync();
     }
 
-    public async Task<Comment> GetSingleAsync(Guid id)
+    public async Task<Comment> GetSingleAsync(int id)
     {
         Comment? comment = await ctx.Comments.FindAsync(id);
         if (comment == null)

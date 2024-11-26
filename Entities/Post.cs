@@ -1,39 +1,29 @@
-﻿namespace Entities
+﻿namespace Entities;
+
+public class Post
 {
-    public class Post
+    public int Id { get; set; }
+    public string Title { get; set; }
+    public string Body { get; set; }
+    public int UserId { get; set; }
+    public User User { get; set; }
+    
+    public int CommentId { get; set; }
+    public IEnumerable<Comment>? Comment { get; set; }
+
+    public Post(string title, string body, int userId)
     {
-        public Guid Id { get; set; }
-        public string Title { get; set; }
-        public string Content { get; set; }
-        public int Likes { get; set; }
-        public int Dislikes { get; set; }
-        public Guid UserId { get; set; } // Changed from int to Guid
-        public User User { get; set; }
-        public List<Comment> Comments { get; set; } = new List<Comment>();
-        public string Body { get; set; }
-        public Guid PostId { get; set; }
+        this.Title = title;
+        this.Body = body;
+        this.UserId = userId;
+    }
 
-        private Post() {} // Private constructor for EFC
+    
 
-        public Post(string title, string content, Guid userId) // Changed from int to Guid
-        {
-            Title = title;
-            Content = content;
-            UserId = userId;
-            Likes = 0;
-            Dislikes = 0;
-        }
 
-        public static Post Create(string title, string content, Guid userId) // Changed from int to Guid
-        {
-            return new Post(title, content, userId);
-        }
-
-        public void Update(string requestTitle, string requestBody)
-        {
-            Title = requestTitle;
-            Body = requestBody;
-            
-        }
+    public void Update(string title, string body)
+    {
+        this.Title = title;
+        this.Body = body;
     }
 }

@@ -5,10 +5,10 @@ namespace ApiContracts
     {
         public Guid Id { get; set; }
         public string Content { get; set; }
-        public Guid PostId { get; set; }
-        public Guid UserId { get; set; }
+        public int PostId { get; set; }
+        public int UserId { get; set; }
 
-        public CommentDto(Guid id, string content, Guid postId, Guid userId)
+        public CommentDto(Guid id, string content, int postId, int userId)
         {
             Id = id;
             Content = content;

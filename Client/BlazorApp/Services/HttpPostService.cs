@@ -76,7 +76,7 @@ public class HttpPostService : IPostService
 
     public async Task<List<PostDto>> GetPostsAsync()
     {
-        HttpResponseMessage httpResponse = await client.GetAsync("api/posts");
+        HttpResponseMessage httpResponse = await client.GetAsync("posts");
         string response = await httpResponse.Content.ReadAsStringAsync();
         if (!httpResponse.IsSuccessStatusCode)
         {

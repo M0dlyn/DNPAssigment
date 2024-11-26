@@ -6,9 +6,9 @@ namespace RepositoryContracts
     public interface IUserRepository
     {
         Task<User> AddAsync(User user);
-        Task<User> GetSingleAsync(Guid id);
-        Task DeleteAsync(Guid id);
+        Task<User> GetSingleAsync(int id);
+        Task DeleteAsync(int id);
         Task<List<User>> GetAllAsync();
-        Task UpdateAsync(Guid id, User user);
+        Task UpdateAsync(int id, User user);
         IQueryable<User> GetMany();    }
 }

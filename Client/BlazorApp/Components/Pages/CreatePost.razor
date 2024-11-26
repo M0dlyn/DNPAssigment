@@ -1,43 +1,89 @@
 ﻿@page "/CreatePost"
-@inject HttpClient Http
-@inject NavigationManager Navigation
-@rendermode InteractiveServer
+@using BlazorApp.Services
+@using System.Security.Claims
+@using System.Text.Json
+@using ApiContracts
+
+@using Microsoft.AspNetCore.Authorization
+@inject IPostService PostService
+@inject NavigationManager NavMgr
+@attribute [Authorize]
 <h3>Create Post</h3>
-
-<EditForm Model="newPost" OnValidSubmit="HandleValidSubmit">
-    <DataAnnotationsValidator />
-    <ValidationSummary />
-
+<div>
+    <h3>CreatePost</h3>
     <div>
-        <label for="title">Title:</label>
-        <InputText id="title" @bind-Value="newPost.Title" />
+        <label>Title:</label>
+        <input type="text" @bind="title"/>
     </div>
     <div>
-        <label for="content">Content:</label>
-        <InputTextArea id="content" @bind-Value="newPost.Content" />
+        <label>Body:</label>
+        <textarea @bind="body"></textarea>
     </div>
-    <button type="submit">Submit</button>
-</EditForm>
+    @if (!string.IsNullOrEmpty(message))
+    {
+    <div>
+        <label>@message</label>
+    </div>
+    }
+    <div>
+        <button @onclick="Create">Create Post</button>
+    </div>
+</div>
 
 @code {
-    private Post newPost = new Post();
+   private string title = string.Empty;
+    private string body = string.Empty;
+    private string message = string.Empty;
+    [CascadingParameter] public Task<AuthenticationState> State { get; set; } = null!; // suppressing null warning by assigning to null!. I know this will be set when the page is loaded, from OnInitializedAsync().
 
-    private async Task HandleValidSubmit()
+    private int? currentUserId;
+
+    protected override async Task OnInitializedAsync()
     {
-        var response = await Http.PostAsJsonAsync("/posts", newPost);
-        if (response.IsSuccessStatusCode)
+        AuthenticationState authenticationState = await State;
+        ClaimsPrincipal claimsPrincipal = authenticationState.User;
+        if(claimsPrincipal.Identity is not null && claimsPrincipal.Identity.IsAuthenticated)
         {
-            Navigation.NavigateTo("/");
-        }
-        else
-        {
-            // Handle error
+            if (int.TryParse(claimsPrincipal.FindFirst("Id")?.Value, out int result))
+            {
+                currentUserId = result;
+            }
         }
     }
 
-    public class Post
+    private async Task Create()
     {
-        public string Title { get; set; }
-        public string Content { get; set; }
+        message = string.Empty; 
+
+        
+        if (string.IsNullOrEmpty(title))
+        {
+            message = "Title is required";
+            return;
+        }
+
+        if (string.IsNullOrEmpty(body))
+        {
+            message = "Body is required";
+            return;
+        }
+        
+        var dto = new CreatePostDto
+        {
+            Title = title,
+            Body = body,
+            UserId = (int)currentUserId!
+        };
+
+        try
+        {
+            PostDto result = await PostService.AddPostAsync(dto);
+            NavMgr.NavigateTo("/ViewSinglePost/" + result.Id); 
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+            message = e.Message;
+        }
     }
 }

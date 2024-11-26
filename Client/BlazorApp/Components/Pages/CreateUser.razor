@@ -1,0 +1,65 @@
+﻿@page "/CreateUser"
+@using ApiContracts
+@inject HttpClient Http
+
+@inject IUserService UserService
+@inject NavigationManager Navigation
+@rendermode InteractiveServer
+
+
+<h3>CreateUser</h3>
+
+
+<div>
+    <div>
+        <label>User name:</label>
+        <input type="text" @bind="userName"/>
+    </div>
+    <div>
+        <label>Password:</label>
+        <input type="text" @bind="password"/>
+    </div>
+    <div>
+        <label>Retype password:</label>
+        <input type="text" @bind="password2"/>
+    </div>
+   
+    <div>
+        <button @onclick="CreateUserAsync" class="btn btn-primary">Save</button>
+    </div>
+
+</div>
+    
+
+@code {
+    private string userName = string.Empty;
+    private string password = string.Empty;
+    private string password2 = string.Empty;
+
+
+    private async Task CreateUserAsync()
+    {
+        if (!string.Equals(password, password2))
+        {
+            Console.WriteLine("Passwords do not match");
+            return;
+        }
+        
+        CreateUserDto newUser = new ()
+        {
+            Name = userName,
+            Password = password
+        };
+
+        try
+        {
+            UserDto created = await UserService.AddUserAsync(newUser);
+            Navigation.NavigateTo("/");
+        }
+        catch (Exception e)
+        {
+            Console.WriteLine(e);
+        }
+    }
+
+}
