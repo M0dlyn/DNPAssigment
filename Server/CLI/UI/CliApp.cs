@@ -6,16 +6,12 @@ namespace CLI.UI;
 using FileRepositories;
 using RepositoryContracts;
 
-
 public class CliApp
 {
-
     private readonly IUserRepository userRepository;
     private readonly ICommentRepository commentRepository;
     private readonly IPostRepository postRepository;
     private readonly ISubForumRepository subForumRepository;
-
-
 
     public CliApp(IUserRepository userRepository, ICommentRepository commentRepository, IPostRepository postRepository,
         ISubForumRepository subForumRepository)
@@ -26,11 +22,9 @@ public class CliApp
         this.subForumRepository = subForumRepository;
     }
 
-
     public async Task StartAsync()
     {
         Console.WriteLine("CLI App started...");
-
 
         Console.WriteLine("Options:");
         Console.WriteLine("1. Add Post");
@@ -46,7 +40,6 @@ public class CliApp
         Console.WriteLine("11. Exit");
 
         var option = Console.ReadLine();
-        
 
         User? user;
         switch (option)
@@ -57,7 +50,7 @@ public class CliApp
                 Console.WriteLine("Enter post body:");
                 var body = Console.ReadLine();
                 Console.WriteLine("Enter user ID:");
-                if (int.TryParse(Console.ReadLine(), out int userId))
+                if (Guid.TryParse(Console.ReadLine(), out Guid userId))
                 {
                     var post = new Post(title, body, userId);
                     await postRepository.AddAsync(post);
@@ -67,12 +60,11 @@ public class CliApp
                 {
                     Console.WriteLine("Invalid user ID.");
                 }
-
-               await StartAsync();
+                await StartAsync();
                 break;
             case "2":
                 Console.WriteLine("Enter post ID:");
-                if (int.TryParse(Console.ReadLine(), out int postId))
+                if (Guid.TryParse(Console.ReadLine(), out Guid postId))
                 {
                     var post = await postRepository.GetSingleAsync(postId);
                     if (post != null)
@@ -92,9 +84,8 @@ public class CliApp
                 await StartAsync();
                 break;
             case "3":
-
                 Console.WriteLine("Enter post ID:");
-                if (int.TryParse(Console.ReadLine(), out int Id))
+                if (Guid.TryParse(Console.ReadLine(), out Guid Id))
                 {
                     var post = await postRepository.GetSingleAsync(Id);
                     if (post != null)
@@ -121,7 +112,7 @@ public class CliApp
                 break;
             case "4":
                 Console.WriteLine("Enter post ID:");
-                if (int.TryParse(Console.ReadLine(), out int id))
+                if (Guid.TryParse(Console.ReadLine(), out Guid id))
                 {
                     var post = await postRepository.GetSingleAsync(id);
                     if (post != null)
@@ -130,9 +121,7 @@ public class CliApp
                         Console.WriteLine($"Post Title: {post.Title}");
                         Console.WriteLine($"Post Body: {post.Body}");
                         Console.WriteLine($"Post User ID: {post.UserId}");
-                        
-                        
-                       
+
                         Console.WriteLine("Options:");
                         Console.WriteLine("a. Add Comment");
                         Console.WriteLine("b. Delete Comment");
@@ -147,9 +136,9 @@ public class CliApp
                                 Console.WriteLine("Enter comment body:");
                                 var commentBody = Console.ReadLine();
                                 Console.WriteLine("Enter user ID:");
-                                if (int.TryParse(Console.ReadLine(), out int commentUserId))
+                                if (Guid.TryParse(Console.ReadLine(), out Guid commentUserId))
                                 {
-                                    var comment = new Comment(commentBody, id, commentUserId);
+                                    var comment = new Comment();
                                     await commentRepository.AddAsync(comment);
                                     Console.WriteLine("Comment added successfully.");
                                 }
@@ -157,11 +146,10 @@ public class CliApp
                                 {
                                     Console.WriteLine("Invalid user ID.");
                                 }
-
                                 break;
                             case "b":
                                 Console.WriteLine("Enter comment ID:");
-                                if(int.TryParse(Console.ReadLine(), out int deleteCommentId))
+                                if (Guid.TryParse(Console.ReadLine(), out Guid deleteCommentId))
                                 {
                                     var comment = await commentRepository.GetSingleAsync(deleteCommentId);
                                     if (comment != null)
@@ -178,11 +166,10 @@ public class CliApp
                                 {
                                     Console.WriteLine("Invalid comment ID.");
                                 }
-
                                 break;
                             case "c":
                                 Console.WriteLine("Enter comment ID:");
-                                if (int.TryParse(Console.ReadLine(), out int updateCommentId))
+                                if (Guid.TryParse(Console.ReadLine(), out Guid updateCommentId))
                                 {
                                     var comment = await commentRepository.GetSingleAsync(updateCommentId);
                                     if (comment != null)
@@ -202,18 +189,16 @@ public class CliApp
                                 {
                                     Console.WriteLine("Invalid comment ID.");
                                 }
-
                                 break;
                             case "d":
                                 Console.WriteLine("Listing comments...");
-                                foreach (var comment in commentRepository.GetMany())
+                                foreach (var comment in await commentRepository.GetAllAsync())
                                 {
                                     Console.WriteLine($"Comment ID: {comment.Id}");
                                     Console.WriteLine($"Comment Body: {comment.Body}");
                                     Console.WriteLine($"Comment User ID: {comment.UserId}");
                                     Console.WriteLine();
                                 }
-
                                 break;
                             case "e":
                                 Console.WriteLine("Exiting...");
@@ -221,7 +206,6 @@ public class CliApp
                             default:
                                 Console.WriteLine("Invalid option");
                                 break;
-                                
                         }
                     }
                     else
@@ -235,10 +219,9 @@ public class CliApp
                 }
                 await StartAsync();
                 break;
-            
             case "5":
                 Console.WriteLine("Listing posts...");
-                foreach (var post in postRepository.GetMany())
+                foreach (var post in await postRepository.GetAllAsync())
                 {
                     Console.WriteLine($"Post ID: {post.Id}");
                     Console.WriteLine($"Post Title: {post.Title}");
@@ -248,20 +231,19 @@ public class CliApp
                 }
                 await StartAsync();
                 break;
-                
             case "6":
                 Console.WriteLine("Enter username:");
                 var username = Console.ReadLine();
                 Console.WriteLine("Enter password:");
                 var password = Console.ReadLine();
-                user = new User(username, password);
+                user = new User();
                 await userRepository.AddAsync(user);
                 Console.WriteLine("User added successfully.");
-                await  StartAsync();
+                await StartAsync();
                 break;
             case "7":
                 Console.WriteLine("Enter user ID:");
-                if (int.TryParse(Console.ReadLine(), out int deleteUserId))
+                if (Guid.TryParse(Console.ReadLine(), out Guid deleteUserId))
                 {
                     user = await userRepository.GetSingleAsync(deleteUserId);
                     if (user != null)
@@ -278,12 +260,11 @@ public class CliApp
                 {
                     Console.WriteLine("Invalid user ID.");
                 }
-                await  StartAsync();
+                await StartAsync();
                 break;
             case "8":
-
                 Console.WriteLine("Enter user ID:");
-                if (int.TryParse(Console.ReadLine(), out int updateUserId))
+                if (Guid.TryParse(Console.ReadLine(), out Guid updateUserId))
                 {
                     user = await userRepository.GetSingleAsync(updateUserId);
                     if (user != null)
@@ -292,7 +273,7 @@ public class CliApp
                         var newUsername = Console.ReadLine();
                         Console.WriteLine("Enter new password:");
                         var newPassword = Console.ReadLine();
-                        user.Username = newUsername;
+                        user.Name = newUsername;
                         user.Password = newPassword;
                         await userRepository.UpdateAsync(updateUserId, user);
                         Console.WriteLine("User updated successfully.");
@@ -310,13 +291,13 @@ public class CliApp
                 break;
             case "9":
                 Console.WriteLine("Enter user ID:");
-                if (int.TryParse(Console.ReadLine(), out int getUserId))
+                if (Guid.TryParse(Console.ReadLine(), out Guid getUserId))
                 {
                     user = await userRepository.GetSingleAsync(getUserId);
                     if (user != null)
                     {
                         Console.WriteLine($"User ID: {user.Id}");
-                        Console.WriteLine($"Username: {user.Username}");
+                        Console.WriteLine($"Username: {user.Name}");
                         Console.WriteLine($"Password: {user.Password}");
                     }
                     else
@@ -328,36 +309,24 @@ public class CliApp
                 {
                     Console.WriteLine("Invalid user ID.");
                 }
-                await  StartAsync();
+                await StartAsync();
                 break;
             case "10":
                 Console.WriteLine("Listing users...");
-                foreach (var u in userRepository.GetMany())
+                foreach (var u in await userRepository.GetAllAsync())
                 {
                     Console.WriteLine($"User ID: {u.Id}");
-                    Console.WriteLine($"Username: {u.Username}");
+                    Console.WriteLine($"Username: {u.Name}");
                     Console.WriteLine();
                 }
-                await  StartAsync();
+                await StartAsync();
                 break;
             case "11":
-            {
                 Console.WriteLine("Exiting...");
                 return;
-            }
-                
             default:
                 Console.WriteLine("Invalid option");
                 break;
-
-
         }
-
-
-
-
-
     }
-
-
 }

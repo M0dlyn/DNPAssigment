@@ -42,7 +42,7 @@ public class SimpleAuthProvider : AuthenticationStateProvider
         UserDto userDto = JsonSerializer.Deserialize<UserDto>(userAsJson)!;
         List<Claim> claims = new List<Claim>()
         {
-            new Claim(ClaimTypes.Name, userDto.Username), new Claim(ClaimTypes.NameIdentifier, userDto.Id.ToString()),
+            new Claim(ClaimTypes.Name, userDto.Name), new Claim(ClaimTypes.NameIdentifier, userDto.Id.ToString()),
         };
         ClaimsIdentity identity = new ClaimsIdentity(claims, "apiauth");
         ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(identity);
@@ -66,7 +66,7 @@ public class SimpleAuthProvider : AuthenticationStateProvider
         await jsRuntime.InvokeVoidAsync("sessionStorage.setItem", "currentUser", serialisedData);
         List<Claim> claims = new List<Claim>()
         {
-            new Claim(ClaimTypes.Name, userDto.Username), new Claim(ClaimTypes.NameIdentifier, userDto.Id.ToString()),
+            new Claim(ClaimTypes.Name, userDto.Name), new Claim(ClaimTypes.NameIdentifier, userDto.Id.ToString()),
         };
         ClaimsIdentity identity = new ClaimsIdentity(claims, "apiauth");
         ClaimsPrincipal claimsPrincipal = new ClaimsPrincipal(identity);

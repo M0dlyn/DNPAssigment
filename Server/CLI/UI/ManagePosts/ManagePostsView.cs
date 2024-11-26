@@ -21,7 +21,7 @@ public class ManagePostsView
     }
     
     
-    public void DeletePost(int id)
+    public void DeletePost(Guid id)
     {
         postRepository.DeleteAsync(id);
     }
@@ -31,7 +31,7 @@ public class ManagePostsView
         postRepository.UpdateAsync(post);
     }
     
-    public void GetSinglePost(int id)
+    public void GetSinglePost(Guid id)
     {
         postRepository.GetSingleAsync(id);
     }

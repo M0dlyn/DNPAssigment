@@ -18,19 +18,19 @@ public class ManageUsersView
         userRepository.AddAsync(user);
     }
     
-    public void DeleteUser(int id)
+    public void DeleteUser(Guid id)
     {
         userRepository.DeleteAsync(id);
     }
     
     
-    public void UpdateUser(int id, User user)
+    public void UpdateUser(Guid id, User user)
     {
         userRepository.UpdateAsync(id, user);
     }
     
     
-    public void GetSingleUser(int id)
+    public void GetSingleUser(Guid id)
     {
         userRepository.GetSingleAsync(id);
     }

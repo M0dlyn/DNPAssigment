@@ -1,5 +1,7 @@
 ﻿namespace CLI.UI.ManageSubForum;
 using RepositoryContracts;
+using System;
+using System.Linq;
 
 public class ListSubForumView
 {
@@ -26,14 +28,14 @@ public class ListSubForumView
             Console.WriteLine($"Post ID: {post.Id}");
             Console.WriteLine($"Post Title: {post.Title}");
             Console.WriteLine($"Post Content: {post.Body}");
-            Console.WriteLine($"Post Author: {user.Username}");
+            Console.WriteLine($"Post Author: {user.Name}");
             Console.WriteLine($"Post Comments:");
             foreach (var comment in comments)
             {
                 var commentUser = await userRepository.GetSingleAsync(comment.UserId);
                 Console.WriteLine($"Comment ID: {comment.Id}");
                 Console.WriteLine($"Comment Body: {comment.Body}");
-                Console.WriteLine($"Comment Author: {commentUser.Username}");
+                Console.WriteLine($"Comment Author: {commentUser.Name}");
             }
             Console.WriteLine();
         }

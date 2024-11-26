@@ -1,38 +1,55 @@
-﻿using System.Formats.Tar;
-using Entities;
+﻿using Entities;
 using RepositoryContracts;
-
 
 namespace InMemoryRepositories;
 
 public class UserInMemoryRepository : IUserRepository
 {
     private List<User> users = new List<User>();
-    
-    
-    
+
     public UserInMemoryRepository()
     {
-        _ = AddAsync(new User("trmo", "1234")).Result;
-        _ = AddAsync(new User("mivi", "4321")).Result;
-        _ = AddAsync(new User("jknr", "1243")).Result;
-        _ = AddAsync(new User("kasr", "2143")).Result;
+        _ = AddAsync(new User()).Result;
+        _ = AddAsync(new User()).Result;
+        _ = AddAsync(new User()).Result;
+        _ = AddAsync(new User()).Result;
     }
 
     public Task<User> AddAsync(User user)
     {
-
-        user.Id = users.Any()
-            ? users.Max(user  => user.Id) + 1
-            : 1;
+        user.Id = Guid.NewGuid();
         users.Add(user);
         return Task.FromResult(user);
-        
     }
 
-    public Task UpdateAsync(int id, User user)
+    public Task<User> GetSingleAsync(Guid id)
     {
-        
+        User? user = users.SingleOrDefault(u => u.Id == id);
+        if (user is null)
+        {
+            throw new InvalidOperationException($"User with Id '{id}' does not exist");
+        }
+        return Task.FromResult(user);
+    }
+
+    public Task DeleteAsync(Guid id)
+    {
+        User? userToRemove = users.SingleOrDefault(u => u.Id == id);
+        if (userToRemove is null)
+        {
+            throw new InvalidOperationException($"User with Id '{id}' does not exist");
+        }
+        users.Remove(userToRemove);
+        return Task.CompletedTask;
+    }
+
+    public Task<List<User>> GetAllAsync()
+    {
+        return Task.FromResult(users.ToList());
+    }
+
+    public Task UpdateAsync(Guid id, User user)
+    {
         User? existingUser = users.SingleOrDefault(u => u.Id == user.Id);
         if (existingUser == null)
         {
@@ -40,31 +57,7 @@ public class UserInMemoryRepository : IUserRepository
         }
         users.Remove(existingUser);
         users.Add(user);
-       return Task.CompletedTask;
-    }
-
-    public Task DeleteAsync(int id)
-    {
-        User? userToRemove = users.SingleOrDefault(u => u.Id == id);
-        if (userToRemove is null)
-        {
-            throw new InvalidOperationException($"User with Id '{id}' does not exist");
-        }
-        
-        users.Remove(userToRemove);
         return Task.CompletedTask;
-    }
-
-    public Task<User> GetSingleAsync(int Id)
-    {
-        User? user = users.SingleOrDefault(u => u.Id == Id);
-
-        if (user is null)
-        {
-            throw new InvalidOperationException($"User with Id '{Id}' does not exist");
-        }
-        
-        return Task.FromResult(user);
     }
 
     public IQueryable<User> GetMany()
@@ -74,7 +67,7 @@ public class UserInMemoryRepository : IUserRepository
 
     public Task<User> FindByUsernameAsync(string requestUsername)
     {
-        User? user = users.SingleOrDefault(u => u.Username == requestUsername);
+        User? user = users.SingleOrDefault(u => u.Name == requestUsername);
         return Task.FromResult(user);
     }
 }

@@ -5,9 +5,7 @@ using RepositoryContracts;
 namespace FileRepositories;
 
 public class PostFileRepository : IPostRepository
-
 {
-
     private readonly string filePath = "posts.json";
 
     public PostFileRepository()
@@ -17,12 +15,12 @@ public class PostFileRepository : IPostRepository
             File.WriteAllText(filePath, "[]");
         }
     }
+
     public async Task<Post> AddAsync(Post post)
     {
         string postsAsJson = await File.ReadAllTextAsync(filePath);
         List<Post> posts = JsonSerializer.Deserialize<List<Post>>(postsAsJson);
-        int maxId = posts.Count > 0 ? posts.Max(p => p.Id) : 1;
-        post.Id = maxId + 1;
+        post.Id = Guid.NewGuid();
         posts.Add(post);
         postsAsJson = JsonSerializer.Serialize(posts);
         await File.WriteAllTextAsync(filePath, postsAsJson);
@@ -42,10 +40,9 @@ public class PostFileRepository : IPostRepository
         posts.Add(post);
         postsAsJson = JsonSerializer.Serialize(posts);
         await File.WriteAllTextAsync(filePath, postsAsJson);
-        
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(Guid id)
     {
         string postsAsJson = await File.ReadAllTextAsync(filePath);
         List<Post> posts = JsonSerializer.Deserialize<List<Post>>(postsAsJson);
@@ -57,10 +54,9 @@ public class PostFileRepository : IPostRepository
         posts.Remove(postToremove);
         postsAsJson = JsonSerializer.Serialize(posts);
         await File.WriteAllTextAsync(filePath, postsAsJson);
-        
     }
 
-    public async Task<Post> GetSingleAsync(int id)
+    public async Task<Post> GetSingleAsync(Guid id)
     {
         string postsAsJson = await File.ReadAllTextAsync(filePath);
         List<Post> posts = JsonSerializer.Deserialize<List<Post>>(postsAsJson);
@@ -78,16 +74,41 @@ public class PostFileRepository : IPostRepository
         List<Post> posts = JsonSerializer.Deserialize<List<Post>>(postsAsJson)!;
         return posts.AsQueryable();
     }
-    
-    
 
-    public Task<Post> LikeAsync(Post post)
+    public async Task<Post> LikeAsync(Post post)
     {
-        throw new NotImplementedException();
+        string postsAsJson = await File.ReadAllTextAsync(filePath);
+        List<Post> posts = JsonSerializer.Deserialize<List<Post>>(postsAsJson);
+        Post? postToLike = posts.SingleOrDefault(p => p.Id == post.Id);
+        if (postToLike == null)
+        {
+            throw new InvalidOperationException($"Post with Id '{post.Id}' does not exist");
+        }
+        postToLike.Likes++;
+        postsAsJson = JsonSerializer.Serialize(posts);
+        await File.WriteAllTextAsync(filePath, postsAsJson);
+        return postToLike;
     }
 
-    public Task<Post> DislikeAsync(Post post)
+    public async Task<Post> DislikeAsync(Post post)
     {
-        throw new NotImplementedException();
+        string postsAsJson = await File.ReadAllTextAsync(filePath);
+        List<Post> posts = JsonSerializer.Deserialize<List<Post>>(postsAsJson);
+        Post? postToDislike = posts.SingleOrDefault(p => p.Id == post.Id);
+        if (postToDislike == null)
+        {
+            throw new InvalidOperationException($"Post with Id '{post.Id}' does not exist");
+        }
+        postToDislike.Dislikes++;
+        postsAsJson = JsonSerializer.Serialize(posts);
+        await File.WriteAllTextAsync(filePath, postsAsJson);
+        return postToDislike;
+    }
+
+    public async Task<IEnumerable<Post>> GetAllAsync()
+    {
+        string postsAsJson = await File.ReadAllTextAsync(filePath);
+        List<Post> posts = JsonSerializer.Deserialize<List<Post>>(postsAsJson);
+        return posts;
     }
 }

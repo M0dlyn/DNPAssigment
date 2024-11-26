@@ -13,9 +13,9 @@ public class ManageCommentsView
     }
     
     
-    public async Task CreateComment(int postId, int userId, string commentBody)
+    public async Task CreateComment(Guid postId, Guid userId, string commentBody)
     {
-        var comment = new Comment(commentBody,userId,postId)
+        var comment = new Comment
         {
             PostId = postId,
             UserId = userId,
@@ -25,19 +25,19 @@ public class ManageCommentsView
         await commentRepository.AddAsync(comment);
     }
     
-    public async Task DeleteComment(int id)
+    public async Task DeleteComment(Guid id)
     {
         await commentRepository.DeleteAsync(id);
     }
     
-    public async Task UpdateComment(int id, string newBody)
+    public async Task UpdateComment(Guid id, string newBody)
     {
         var comment = await commentRepository.GetSingleAsync(id);
         comment.Body = newBody;
         await commentRepository.UpdateAsync(comment);
     }
     
-    public async Task GetSingleComment(int id)
+    public async Task GetSingleComment(Guid id)
     {
         await commentRepository.GetSingleAsync(id);
     }

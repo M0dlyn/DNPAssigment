@@ -1,17 +1,19 @@
-﻿namespace ApiContracts;
-
-public class CommentDto
+﻿// CommentDto.cs
+namespace ApiContracts
 {
-    public int Id { get; set; }
-    public string Body { get; set; }
-    public int UserId { get; set; }
-    
-    public int PostId { get; set; }
-    
-    public CommentDto(int id, string body, int postId, int userId)
+    public class CommentDto
     {
-        this.Body = body;
-        this.UserId = userId;
-        this.PostId = postId;
+        public Guid Id { get; set; }
+        public string Content { get; set; }
+        public Guid PostId { get; set; }
+        public Guid UserId { get; set; }
+
+        public CommentDto(Guid id, string content, Guid postId, Guid userId)
+        {
+            Id = id;
+            Content = content;
+            PostId = postId;
+            UserId = userId;
+        }
     }
 }

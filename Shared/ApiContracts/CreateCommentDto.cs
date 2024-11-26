@@ -1,9 +1,10 @@
-﻿namespace ApiContracts;
-
-public class CreateCommentDto
+﻿// CreateCommentDto.cs
+namespace ApiContracts
 {
-    public string Body { get; set; }
-    public int UserId { get; set; }
-    
-    public int PostId { get; set; }
+    public class CreateCommentDto
+    {
+        public string Content { get; set; }
+        public Guid PostId { get; set; }
+        public Guid UserId { get; set; }
+    }
 }

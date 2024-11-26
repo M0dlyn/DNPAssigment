@@ -1,15 +1,15 @@
-﻿using Entities;
+﻿// ICommentRepository.cs
+using Entities;
 
-namespace RepositoryContracts;
-
-public interface ICommentRepository
+namespace RepositoryContracts
 {
-    Task<Comment> AddAsync(Comment comment);
-    Task UpdateAsync(Comment comment);
-    Task DeleteAsync(int id);
-    Task<Comment> GetSingleAsync(int id);
-    IQueryable<Comment> GetMany();
-    Task<Comment> LikeAsync(Comment comment);
-    Task<Comment> DislikeAsync(Comment comment);
-    Task<Comment> CommentAsync(Comment comment);
+    public interface ICommentRepository
+    {
+        Task<Comment> AddAsync(Comment comment);
+        Task<Comment> GetSingleAsync(Guid id);
+        Task DeleteAsync(Guid id);
+        Task<List<Comment>> GetAllAsync();
+        Task UpdateAsync(Comment comment);
+        IQueryable<Comment> GetMany();
+    }
 }

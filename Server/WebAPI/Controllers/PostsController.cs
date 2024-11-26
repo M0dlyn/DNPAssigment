@@ -33,7 +33,7 @@ public class PostsController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdatePost(int id, [FromBody] UpdatePostDto request)
+    public async Task<IActionResult> UpdatePost(Guid id, [FromBody] UpdatePostDto request)
     {
         try
         {
@@ -54,7 +54,7 @@ public class PostsController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<PostDto>> GetSinglePost(int id)
+    public async Task<ActionResult<PostDto>> GetSinglePost(Guid id)
     {
         try
         {
@@ -90,7 +90,7 @@ public class PostsController : ControllerBase
     }
 
     [HttpDelete("{id}")]
-    public async Task<IActionResult> DeletePost(int id)
+    public async Task<IActionResult> DeletePost(Guid id)
     {
         try
         {

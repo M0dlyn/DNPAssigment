@@ -1,17 +1,14 @@
-﻿namespace Entities;
-
-public class User
+﻿namespace Entities
 {
-    public string Username { get; set; }
-    public string Password { get; set; }
-    public int Id { get; set; }
-
-
-    public User(String username, String password)
+    public class User
     {
-        this.Username = username;
-        this.Password = password;
+        public Guid Id { get; set; }
+        public string Name { get; set; }
+        public string Email { get; set; }
+        public string Password { get; set; }
+        public IEnumerable<Post>? Posts { get; set; }
+        public IEnumerable<Comment>? Comments { get; set; }
+
+        public User() {} // Public constructor for EFC
     }
-    
-    
 }
