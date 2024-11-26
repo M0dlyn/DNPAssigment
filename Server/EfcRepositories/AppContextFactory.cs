@@ -8,7 +8,7 @@ namespace EfcRepositories
         public AppContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<AppContext>();
-            optionsBuilder.UseSqlite("Data Source=app.db");
+            optionsBuilder.UseSqlite("Data Source=C:\\Users\\Mario\\RiderProjects\\DNPAssigment1\\Server\\EfcRepositories\\app.db");
 
             return new AppContext(optionsBuilder.Options);
         }

@@ -1,96 +1,117 @@
 ﻿using System.Text.Json;
 using ApiContracts;
+using Entities;
+using Microsoft.EntityFrameworkCore;
 
 namespace BlazorApp.Services;
 
 public class HttpCommentService : ICommentService
 {
-
     private readonly HttpClient client;
+    private readonly EfcRepositories.AppContext context;
 
-    public HttpCommentService(HttpClient client)
+    public HttpCommentService(HttpClient client, EfcRepositories.AppContext context)
     {
         this.client = client;
+        this.context = context;
     }
-
     public async Task<CommentDto> AddCommentAsync(CreateCommentDto request)
     {
-        HttpResponseMessage httpResponse = await client.PostAsJsonAsync("comments", request);
-        string response = await httpResponse.Content.ReadAsStringAsync();
-        if (!httpResponse.IsSuccessStatusCode)
+        var comment = new Comment
         {
-            throw new Exception(response);
-        }
+            Body = request.Content,
+            PostId = request.PostId,
+            UserId = request.UserId
+        };
 
-        return JsonSerializer.Deserialize<CommentDto>(response, new JsonSerializerOptions
+        context.Comments.Add(comment);
+        await context.SaveChangesAsync();
+
+        return new CommentDto
         {
-            PropertyNameCaseInsensitive = true
-
-        })!;
+            Id = comment.Id,
+            Content = comment.Body,
+            PostId = comment.PostId,
+            UserId = comment.UserId
+        };
     }
 
+    
     public async Task<CommentDto> UpdateCommentAsync(int id, UpdateCommentDto request)
     {
-        HttpResponseMessage httpResponse = await client.PutAsJsonAsync($"comments/{id}", request);
-        string response = await httpResponse.Content.ReadAsStringAsync();
-        if (!httpResponse.IsSuccessStatusCode)
+        var comment = await context.Comments.FindAsync(id);
+        if (comment == null)
         {
-            throw new Exception(response);
+            throw new Exception("Comment not found");
         }
 
-        return JsonSerializer.Deserialize<CommentDto>(response, new JsonSerializerOptions
+        comment.Body = request.Content;
+        await context.SaveChangesAsync();
+
+        return new CommentDto
         {
-            PropertyNameCaseInsensitive = true
-
-        })!;
+            Id = comment.Id,
+            Content = comment.Body,
+            PostId = comment.PostId,
+            UserId = comment.UserId
+        };
     }
+    
 
+    
     public async Task<CommentDto> DeleteCommentAsync(int id)
     {
-        HttpResponseMessage httpResponse = await client.DeleteAsync($"comments/{id}");
-        string response = await httpResponse.Content.ReadAsStringAsync();
-        if (!httpResponse.IsSuccessStatusCode)
+        var comment = await context.Comments.FindAsync(id);
+        if (comment == null)
         {
-            throw new Exception(response);
+            throw new Exception("Comment not found");
         }
 
-        return JsonSerializer.Deserialize<CommentDto>(response, new JsonSerializerOptions
+        context.Comments.Remove(comment);
+        await context.SaveChangesAsync();
+
+        return new CommentDto
         {
-            PropertyNameCaseInsensitive = true
-
-        })!;
+            Id = comment.Id,
+            Content = comment.Body,
+            PostId = comment.PostId,
+            UserId = comment.UserId
+        };
     }
+    
 
+    
     public async Task<CommentDto> GetCommentAsync(int id)
     {
-        HttpResponseMessage httpResponse = await client.GetAsync($"comments/{id}");
-        string response = await httpResponse.Content.ReadAsStringAsync();
-        if (!httpResponse.IsSuccessStatusCode)
+        var comment = await context.Comments.FindAsync(id);
+        if (comment == null)
         {
-            throw new Exception(response);
+            throw new Exception("Comment not found");
         }
 
-        return JsonSerializer.Deserialize<CommentDto>(response, new JsonSerializerOptions
+        return new CommentDto
         {
-            PropertyNameCaseInsensitive = true
-
-        })!;
+            Id = comment.Id,
+            Content = comment.Body,
+            PostId = comment.PostId,
+            UserId = comment.UserId
+        };
     }
+    
 
+    
     public async Task<List<CommentDto>> GetCommentsForPostAsync(int postId)
     {
-        HttpResponseMessage httpResponse = await client.GetAsync($"posts/{postId}/comments");
-        string response = await httpResponse.Content.ReadAsStringAsync();
-        if (!httpResponse.IsSuccessStatusCode)
-        {
-            throw new Exception(response);
-        }
+        var comments = await context.Comments.Where(c => c.PostId == postId).ToListAsync();
 
-        return JsonSerializer.Deserialize<List<CommentDto>>(response, new JsonSerializerOptions
+        return comments.Select(comment => new CommentDto
         {
-            PropertyNameCaseInsensitive = true
-
-        })!;
+            Id = comment.Id,
+            Content = comment.Body,
+            PostId = comment.PostId,
+            UserId = comment.UserId
+        }).ToList();
     }
+    
 
 }

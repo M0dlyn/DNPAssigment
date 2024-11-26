@@ -18,7 +18,10 @@ public class Post
         this.UserId = userId;
     }
 
-    
+    public Post()
+    {
+
+    }
 
 
     public void Update(string title, string body)

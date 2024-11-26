@@ -1,8 +1,9 @@
 ﻿@page "/CreateUser"
 @using ApiContracts
+@using RepositoryContracts
 @inject HttpClient Http
 
-@inject IUserService UserService
+@inject IUserRepository UserService
 @inject NavigationManager Navigation
 @rendermode InteractiveServer
 
@@ -53,7 +54,7 @@
 
         try
         {
-            UserDto created = await UserService.AddUserAsync(newUser);
+            UserDto created = await UserService.AddAsync(newUser);
             Navigation.NavigateTo("/");
         }
         catch (Exception e)

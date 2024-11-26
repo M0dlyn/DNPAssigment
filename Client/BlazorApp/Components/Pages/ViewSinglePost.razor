@@ -3,9 +3,10 @@
 @using BlazorApp.Services
 @using System.Security.Claims
 @using ApiContracts
-@inject IPostService PostService
-@inject ICommentService CommentService
-@inject IUserService UserService
+@using RepositoryContracts
+@inject IPostRepository PostService
+@inject ICommentRepository CommentService
+@inject IUserRepository UserService
 
 
 @if (postDto is not null)

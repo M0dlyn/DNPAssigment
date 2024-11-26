@@ -14,7 +14,9 @@ public class PostDto
         Id = id;
         UserId = userId;
     }
-    
 
-   
+    public PostDto()
+    {
+
+    }
 }

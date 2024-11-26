@@ -11,8 +11,10 @@
         {
             Id = id;
             Name = name;
-            
             Password = password;
+        }
+        public UserDto()
+        {
         }
     }
 }

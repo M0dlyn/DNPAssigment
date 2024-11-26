@@ -15,5 +15,10 @@ namespace ApiContracts
             PostId = postId;
             UserId = userId;
         }
+
+        public CommentDto()
+        {
+            
+        }
     }
 }

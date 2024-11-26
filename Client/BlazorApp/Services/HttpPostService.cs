@@ -1,5 +1,8 @@
 ﻿using System.Text.Json;
 using ApiContracts;
+using Entities;
+using Microsoft.EntityFrameworkCore;
+
 namespace BlazorApp.Services;
     
 
@@ -7,87 +10,109 @@ namespace BlazorApp.Services;
 
 public class HttpPostService : IPostService
 {
+   
     private readonly HttpClient client;
-    
-    public HttpPostService(HttpClient client)
+    private readonly EfcRepositories.AppContext context;
+
+    public HttpPostService(HttpClient client, EfcRepositories.AppContext context)
     {
         this.client = client;
+        this.context = context;
     }
     
     public async Task<PostDto> AddPostAsync(CreatePostDto request)
     {
-        HttpResponseMessage httpResponse = await client.PostAsJsonAsync("posts", request);
-        string response = await httpResponse.Content.ReadAsStringAsync();
-        if (!httpResponse.IsSuccessStatusCode)
+        var post = new Post
         {
-            throw new Exception(response);
-        }
-        return JsonSerializer.Deserialize<PostDto>(response, new JsonSerializerOptions
+            Title = request.Title,
+            Body = request.Body,
+            UserId = request.UserId
+        };
+
+        context.Posts.Add(post);
+        await context.SaveChangesAsync();
+
+        return new PostDto
         {
-            PropertyNameCaseInsensitive = true 
-            
-        })!;
+            Id = post.Id,
+            Title = post.Title,
+            Body = post.Body
+        };
     }
+    
     
     public async Task<PostDto> UpdatePostAsync(int id, UpdatePostDto request)
     {
-        HttpResponseMessage httpResponse = await client.PutAsJsonAsync($"posts/{id}", request);
-        string response = await httpResponse.Content.ReadAsStringAsync();
-        if (!httpResponse.IsSuccessStatusCode)
+        var post = await context.Posts.FindAsync(id);
+        if (post == null)
         {
-            throw new Exception(response);
+            throw new Exception("Post not found");
         }
-        return JsonSerializer.Deserialize<PostDto>(response, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true 
-            
-        })!;
-    }
 
+        post.Update(request.Title, request.Body);
+        await context.SaveChangesAsync();
+
+        return new PostDto
+        {
+            Id = post.Id,
+            Title = post.Title,
+            Body = post.Body
+        };
+    }
+    
+
+    
     public async Task<PostDto> DeletePostAsync(int id)
     {
-        HttpResponseMessage httpResponse = await client.DeleteAsync($"posts/{id}");
-        string response = await httpResponse.Content.ReadAsStringAsync();
-        if (!httpResponse.IsSuccessStatusCode)
+        var post = await context.Posts.FindAsync(id);
+        if (post == null)
         {
-            throw new Exception(response);
+            throw new Exception("Post not found");
         }
-        return JsonSerializer.Deserialize<PostDto>(response, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true 
-            
-        })!;
-    }
 
+        context.Posts.Remove(post);
+        await context.SaveChangesAsync();
+
+        return new PostDto
+        {
+            Id = post.Id,
+            Title = post.Title,
+            Body = post.Body
+        };
+    }
+    
+
+    
     public async Task<PostDto> GetPostAsync(int id)
     {
-        HttpResponseMessage httpResponse = await client.GetAsync($"posts/{id}");
-        string response = await httpResponse.Content.ReadAsStringAsync();
-        if (!httpResponse.IsSuccessStatusCode)
+        var post = await context.Posts.FindAsync(id);
+        if (post == null)
         {
-            throw new Exception(response);
+            throw new Exception("Post not found");
         }
-        return JsonSerializer.Deserialize<PostDto>(response, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true 
-            
-        })!;
-    }
 
+        return new PostDto
+        {
+            Id = post.Id,
+            Title = post.Title,
+            Body = post.Body
+        };
+    }
+    
+
+    
     public async Task<List<PostDto>> GetPostsAsync()
     {
-        HttpResponseMessage httpResponse = await client.GetAsync("posts");
-        string response = await httpResponse.Content.ReadAsStringAsync();
-        if (!httpResponse.IsSuccessStatusCode)
+        var posts = await context.Posts.ToListAsync();
+
+        return posts.Select(post => new PostDto
         {
-            throw new Exception(response);
-        }
-        return JsonSerializer.Deserialize<List<PostDto>>(response, new JsonSerializerOptions
-        {
-            PropertyNameCaseInsensitive = true
-            
-        })!;
+            Id = post.Id,
+            Title = post.Title,
+            Body = post.Body
+        }).ToList();
     }
+    
     
     
     
